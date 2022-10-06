@@ -1,0 +1,176 @@
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Assistant');
+
+    body {
+        background: #eee;
+        font-family: Assistant, sans-serif;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .cell-1 {
+        border-collapse: separate;
+        border-spacing: 0 4em;
+        background: #fff;
+        border-bottom: 5px solid transparent;
+        /background-color: gold;/
+        background-clip: padding-box;
+    }
+
+    thead {
+        background: #dddcdc;
+    }
+
+    .toggle-btn {
+        width: 40px;
+        height: 21px;
+        background: grey;
+        border-radius: 50px;
+        padding: 3px;
+        cursor: pointer;
+        -webkit-transition: all 0.3s 0.1s ease-in-out;
+        -moz-transition: all 0.3s 0.1s ease-in-out;
+        -o-transition: all 0.3s 0.1s ease-in-out;
+        transition: all 0.3s 0.1s ease-in-out;
+    }
+
+    .toggle-btn>.inner-circle {
+        width: 15px;
+        height: 15px;
+        background: #fff;
+        border-radius: 50%;
+        -webkit-transition: all 0.3s 0.1s ease-in-out;
+        -moz-transition: all 0.3s 0.1s ease-in-out;
+        -o-transition: all 0.3s 0.1s ease-in-out;
+        transition: all 0.3s 0.1s ease-in-out;
+    }
+
+    .toggle-btn.active {
+        background: blue !important;
+    }
+
+    .toggle-btn.active>.inner-circle {
+        margin-left: 19px;
+    }
+</style>
+
+
+
+
+
+
+<div class="container-fluid mt-5">
+    <div class="d-flex justify-content-center row mt-5">
+        <div class="col-md-10 mt-5">
+            <div class="rounded mt-5">
+                <div class="table-responsive table-borderless table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                {{!-- <th>No.</th> --}}
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                                <th>Payment through</th>
+                                <th>Status</th>
+                                <th>View</th>
+                                <th>Cancel Order</th>
+                            </tr>
+                        </thead>
+                        {{#each allOrders}}
+
+                        <tbody class="table-body">
+                            <tr class="cell-1">
+                                {{!--
+                            <tr>{{inc1 @../index}}</tr> --}}
+                            <td>{{format this.createdAt}}</td>
+                            <td> {{#each this.products}}{{this.productId.productname}} <br><br> {{/each}} </td>
+                            <td>{{#each this.products}}{{this.quantity}} X {{this.productId.price}} <br> <br> {{/each}}
+                            </td>
+                            <td>{{#each this.products}}₹ {{subTotal this.productId.price this.quantity}}<br><br>
+                                {{/each}} </td>
+                            <td>{{this.paymentMethod}}</td>
+                            <td><span>{{this.productStatus}}</span></td>
+
+
+                            <td> <a href="/trackOrder/{{this._id}}"><i class="fa fa-eye" style="font-size:15px"></i></a>
+                            </td>
+                            {{#if (or (eq this.productStatus "Pending")(eq this.productStatus "shipped"))}}
+                            {{!-- <td><a href="/cancelOrder/{{this._id}}" class="btn btn-danger" style="font-size:small ;">Cancel</a></td> --}}
+                            <td><button class="btn btn-danger" onclick="cancelOrder('{{this._id}}')">Cancel</button>
+                            </td>
+                            {{/if}}
+                            {{#if (eq this.productStatus "delivered")}}
+                            <td style="color:green ;">Delivered</td>
+                            {{/if}}
+                            {{#if (eq this.productStatus "cancelled")}}
+                            <td style="color:red ;">Cancelled</td>
+                            {{/if}}
+                            </tr>
+
+                        </tbody>
+
+                        {{/each}}
+                    </table>
+
+
+                    <script>
+    $(document).ready(function () {
+
+        $('.toggle-btn').click(function () {
+            $(this).toggleClass('active').siblings().removeClass('active');
+        });
+
+    });
+</script>
+
+
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    async function cancel(id) {
+
+        axios({
+            method: 'post',
+            url: '/cancelOrder/' + id
+        }).then((response) => {
+
+
+            location.reload()
+
+        }).catch((response) => {
+            console.log(response)
+        })
+    }
+
+    function cancelOrder(id) {
+        swal({
+            title: "Are you sure?",
+            
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    this.cancel(id)
+                    swal("Poof! Your order cancelled successfully!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Your order is safe!");
+                }
+            });
+    }
+</script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

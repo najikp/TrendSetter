@@ -1,0 +1,63 @@
+<style>
+  .body{
+    background-color: gainsboro;
+  
+  }
+</style>
+<div class="body">
+<h2 style="text-align: center;">Edit Address</h2>
+
+
+<form method="post" action="/editAddress/{{addressid}}" class="container  needs-validation" novalidate>
+
+        <div class="row">
+
+          <div class="mb-3">
+            <label for="lastName">Name</label>
+            <input type="text" name="name"  class="form-control" id="name" placeholder="" value="{{addresses.[0].address.name}}" required>
+            <div class="invalid-feedback">
+              Valid name is required.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="address2">Mobile</label>
+          <input type="number" value="{{addresses.[0].address.mobile}}" name="mobile" class="form-control" id="mobile">
+        </div>
+
+        {{!-- <input type="text" name="_id" value="{{addressess.[0]._id}}" hidden > --}}
+
+        <div class="mb-3">
+          <label for="address">Address</label>
+          <input type="text" name="house" value="{{addresses.[0].address.house}}" class="form-control" id="address" placeholder="1234 Main St" required>
+          <div class="invalid-feedback">
+            Please enter your shipping address.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address2">Appartment,suit,etc.</label>
+          <input type="text" name="apartment" value="{{addresses.[0].address.apartment}}" class="form-control" id="address2" placeholder="Apartment or suite">
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="country">Landmark</label>
+            <input type="text" value="{{addresses.[0].address.landmark}}" name="landmark" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="country">District</label>
+            <input type="text" value="{{addresses.[0].address.district}}" name="district" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="state">PIN</label>
+            <input type="number" value="{{addresses.[0].address.pin}}" name="pin" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="zip">State</label>
+            <input type="text" value="{{addresses.[0].address.state}}" name="state" class="form-control">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
+        </div>

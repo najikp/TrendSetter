@@ -1,0 +1,801 @@
+<style>
+  .modal-container {
+  padding: 2rem 0rem;
+}
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
+
+
+.modal-dialog {
+  position: fixed;
+  top: auto;
+  left: auto;
+  right: 0.5rem;
+  bottom: 0;
+  margin-bottom: 0.5rem;
+  min-width: 300px;
+  max-width: 400px;
+  
+  .notice {
+    padding: 0rem 1rem;
+    
+    h4 {
+      margin-bottom: 1.5rem;
+    }
+    
+    p {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  .icon {
+    font-size: 3rem;
+  }
+}
+
+
+
+
+
+    :root {
+  --card-line-height: 1.2em;
+  --card-padding: 1em;
+  --card-radius: 0.5em;
+  --color-green: #558309;
+  --color-gray: #e2ebf6;
+  --color-dark-gray: #c4d1e1;
+  --radio-border-width: 2px;
+  --radio-size: 1.5em;
+}
+
+.body {
+  background-color: #f2f8ff;
+  color: #263238;
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 2em 6vw;
+}
+
+.grid {
+  display: grid;
+  grid-gap: var(--card-padding);
+  margin: 0 auto;
+  max-width: 60em;
+  padding: 0;
+ 
+  @media (min-width: 42em) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background-color: #fff;
+  border-radius: var(--card-radius);
+  position: relative;
+  
+  &:hover {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.radio {
+  font-size: inherit;
+  margin: 0;
+  position: absolute;
+  right: calc(var(--card-padding) + var(--radio-border-width));
+  top: calc(var(--card-padding) + var(--radio-border-width));
+}
+
+@supports(-webkit-appearance: none) or (-moz-appearance: none) { 
+  .radio {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: #fff;
+    border: var(--radio-border-width) solid var(--color-gray);
+    border-radius: 50%;
+    cursor: pointer;
+    height: var(--radio-size);
+    outline: none;
+    transition: 
+      background 0.2s ease-out,
+      border-color 0.2s ease-out;
+    width: var(--radio-size); 
+
+    &::after {
+      border: var(--radio-border-width) solid #fff;
+      border-top: 0;
+      border-left: 0;
+      content: '';
+      display: block;
+      height: 0.75rem;
+      left: 25%;
+      position: absolute;
+      top: 50%;
+      transform: 
+        rotate(45deg)
+        translate(-50%, -50%);
+      width: 0.375rem;
+    }
+
+    &:checked {
+      background: var(--color-green);
+      border-color: var(--color-green);
+    }
+  }
+  
+  .card:hover .radio {
+    border-color: var(--color-dark-gray);
+    
+    &:checked {
+      border-color: var(--color-green);
+    }
+  }
+}
+
+.plan-details {
+  border: var(--radio-border-width) solid var(--color-gray);
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  padding: var(--card-padding);
+  transition: border-color 0.2s ease-out;
+}
+
+.card:hover .plan-details {
+  border-color: var(--color-dark-gray);
+}
+
+.radio:checked ~ .plan-details {
+  border-color: var(--color-green);
+}
+
+.radio:focus ~ .plan-details {
+  box-shadow: 0 0 0 2px var(--color-dark-gray);
+}
+
+.radio:disabled ~ .plan-details {
+  color: var(--color-dark-gray);
+  cursor: default;
+}
+
+.radio:disabled ~ .plan-details .plan-type {
+  color: var(--color-dark-gray);
+}
+
+.card:hover .radio:disabled ~ .plan-details {
+  border-color: var(--color-gray);
+  box-shadow: none;
+}
+
+.card:hover .radio:disabled {
+    border-color: var(--color-gray);
+  }
+
+.plan-type {
+  color: var(--color-green);
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1em;
+}
+
+.plan-cost {
+  font-size: 2.5rem;
+  font-weight: bold;
+  padding: 0.5rem 0;
+}
+
+.slash {
+  font-weight: normal;
+}
+
+.plan-cycle {
+  font-size: 2rem;
+  font-variant: none;
+  border-bottom: none;
+  cursor: inherit;
+  text-decoration: none;
+}
+
+.hidden-visually {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+  </style>
+
+
+
+
+
+
+<!--Main layout-->
+  <main class="pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center ">Checkout</h2>
+
+      <!--Grid row-->
+      <div class="row">
+
+        <!--Grid column-->
+        <div class="col-md-8 mb-4">
+
+          <!--Card-->
+          <div class="card">
+
+            <!--Card content-->
+{{!-- <form  class="card-body" action="/checkout" method="post"> --}}
+
+              {{!-- <!--Grid row-->
+              <div class="row">
+
+                <!--Grid column-->
+                <div class="col-md-6 mb-2">
+
+                  <!--firstName-->
+                  <div class="md-form ">
+                    <input type="text" id="firstName" name="firstname" class="form-control">
+                    <label for="firstName" class="">First name</label>
+                  </div>
+
+                </div>
+                <!--Grid column-->
+                {{viewaddress.Lastname}}
+
+                <!--Grid column-->
+                <div class="col-md-6 mb-2">
+
+                  <!--lastName-->
+                  <div class="md-form">
+                    <input type="text" id="lastName" name="lastname" class="form-control">
+                    <label for="lastName" class="">Last name</label>
+                  </div>
+
+                </div>
+                <!--Grid column-->
+
+              </div>
+              <!--Grid row--> --}}
+
+
+              <!--Username-->
+                      <h4 class="m-4">Billing Address</h4>
+
+              <a type="submit" href="" data-bs-toggle="modal" data-bs-target="#addAddress" class="btn btn-secondary mx-4">Add Address</a>
+             {{#if addresses}}
+                <label for="state" class="m-4">Choose an Address:</label>
+                {{/if}}
+
+                  {{!-- <select class="custom-select  d-block fw-light w-100" id="state" name="address" style="height: 50px;" required>
+                       {{#each viewaddress}}
+                        
+                    <option >{{this.Name}}  {{this.Lastname}}  {{this.Housename}}  {{this.Pincode}}  {{this.Locality}}   {{this.Landmark}}   {{this.State}} ,     num : {{this.Number}}         <i class="bi bi-pen"></i>           <i class="bi bi-trash"></i> </option>
+                      {{/each}}                                            
+                  </select> --}}
+<div class="container-fluid mx-1 row">
+    {{#each addresses}}
+                  <div class=" col-md-6">
+  <label class="card">
+    <input name="deliveryAddress" value="{{this._id}}" class="radio" checked required type="radio">
+    <span class="plan-details">
+      <span class="plan-type">{{this.address.name}}</span>
+      <span>{{this.address.house}},{{this.address.apartment}}</span>
+      <span>{{this.address.district}},{{this.address.pin}}</span>
+      <span>{{this.address.state}}</span>
+      <span>Mobile:{{this.address.mobile}}</span>
+    </span>
+  </label>
+</div>
+  {{/each}}
+</div>
+<hr>
+
+
+
+
+
+
+                  
+
+                 
+
+
+
+
+
+
+
+
+              
+
+              <!--Grid row-->
+              <div class="row">
+
+                
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                 
+                  <div class="invalid-feedback">
+                    Please provide a valid state.
+                  </div>
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                 
+
+                </div>
+                <!--Grid column-->
+
+              </div>
+              <!--Grid row-->
+              {{!-- <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" required id="same-address">
+                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+              </div> --}}
+              {{!-- <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="save-info">
+                <label class="custom-control-label" for="save-info">Save this information for next time</label>
+              </div> --}}
+
+
+              
+             <!-- Group of default radios - option 1 -->
+        
+                {{!-- <div class="form-check">
+                 <input class="form-check-input" type="checkbox" value="COD" name="paymentMethod" id="COD">
+                 <label class="form-check-label" for="flexCheckDefault">
+                COD
+                 </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="online" name="paymentMethod" id="netbanking" checked>
+                  <label class="form-check-label" for="flexCheckChecked">
+                  Online Payment
+                 </label>
+                </div> --}}
+
+        <h4 class="mb-3">Payment Method</h4>
+    {{!-- <div class="drop-down">        
+      <select class="form-select" name="paymentMethod" >
+        <option value="COD">Cash On Delivery</option>
+        <option value="Online">Onilne Payment</option>
+      </select>
+    </div> --}}
+
+    <div class="form-check">
+  <input class="form-check-input" value="COD" type="radio" name="paymentMethod" id="flexRadioDefault1" checked>
+  <label class="form-check-label" for="flexRadioDefault1">
+    Cash On Delivery
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" value="Online" type="radio" name="paymentMethod" id="flexRadioDefault2">
+  <label class="form-check-label" for="flexRadioDefault2">
+    Online Payment
+  </label>
+</div>
+            
+  
+              <hr class="mb-4">
+            <button class="btn btn-success btn-lg btn-block" onclick="checkout()" type="submit">Continue to checkout</button>
+
+             
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-md-4 mb-4">
+
+          <!-- Heading -->
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Cart Items</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+<input type="text" hidden class="grandTotal" id="grandTotalInput" name="cart" value="{{productData}}">
+          <!-- Cart -->
+          {{#each productData}}
+                     {{#each this.Cartdata}}
+          <ul class="list-group mb-3 z-depth-1">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+              <div>
+                
+                <h6 class="my-0">{{this.productId.productname}}</h6>
+                {{!-- <small class="text-muted">quantity</small> --}}
+              </div>
+              {{!-- <span class="text-muted">{{this.quantity}}</span> --}}
+              <div class=""><label class="text-muted">{{this.productId.price}}×{{this.quantity}}</label>: <b>{{multiply this.productId.price this.quantity}}</b></div>
+            </li>
+             {{/each}}
+          {{/each}}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+               
+                {{!-- <h6 class="my-0">Second product</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$8</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Third item</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>EXAMPLECODE</small>
+              </div>
+              <span class="text-success">-$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (USD)</span> 
+              <strong>$20</strong>/
+            </li> --}}
+               <div class="input-group" style="color:green;  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;" >
+               {{!-- type="text" class="form-control" placeholder="total Amount " aria-label="Recipient's username" aria-describedby="basic-addon2" --}}
+              
+              
+               <p>Total Amount:<span name="totalamount" id="totalAmount">₹ {{total}}</span></p>
+               
+                  
+               
+    
+             {{!-- {{#if coupon}}
+                <li class="list-group-item d-flex justify-content-between">
+              <span style="color: rgb(22, 196, 22); font-weight: 600;">Congratulation {{userdetails.name}}!!  Coupon Applied.
+              <strong style="color: rgb(11, 121, 22) ; bold">₹{{applaycoupen.grandtotal}}</strong></span>
+            </li>
+             {{else}}
+             <p></p>
+            {{/if}} --}}
+          
+          </ul>
+            
+          <h5 class="text-muted">Apply Coupon</h5>
+            
+          <!-- Cart -->
+          
+{{!-- </form> --}}
+          <!-- Promo code -->
+          {{!-- <form action="/applycoupon" class="card p-2" method="post"> --}}
+            <div class="input-group">
+              <button type="button"  class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#discountModal">
+    <span class="fa fa-gift"></span>
+  </button>
+              <input type="text" class="form-control" name="couponCode" id="couponCode" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-md waves-effect m-0" onclick="applyCoupon()" type="submit">Redeem</button>
+              </div>
+            </div>
+          {{!-- </form> --}}
+          <!-- Promo code -->
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+{{!-- /////////////////ADD ADDRESS MODAL//////////////// --}}
+<form action="/address/{{userid}}" method="post">
+<div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">New Address</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="row">
+
+          <div class="mb-3">
+            <label for="lastName">Name</label>
+            <input type="text" name="name" class="form-control" id="lastName" placeholder="" value="" required>
+            <div class="invalid-feedback">
+              Valid name is required.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="address2">Mobile</label>
+          <input type="number" name="mobile" class="form-control" id="mobile">
+        </div>
+
+      
+
+        <div class="mb-3">
+          <label for="address">Address</label>
+          <input type="text" name="house" class="form-control" id="address" placeholder="1234 Main St" required>
+          <div class="invalid-feedback">
+            Please enter your shipping address.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address2">Appartment,suit,etc.</label>
+          <input type="text" name="apartment" class="form-control" id="address2" placeholder="Apartment or suite">
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="country">Landmark</label>
+            <input type="text" name="landmark" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="country">District</label>
+            <input type="text" name="district" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="state">PIN</label>
+            <input type="number" name="pin" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="zip">State</label>
+            <input type="text" name="state" class="form-control">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+    {{!-- ///////////////////////coupon modal///////// --}}
+    <div class="modal-container">
+    
+</div>
+
+<div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog " role="document">
+      {{#each coupons}}
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="icon text-danger">
+          <i class="fas fa-gift"></i>
+        </div>
+        <div class="notice">
+          <h4>Get {{this.discount}}% Discount</h4>
+          <p>Copy this <b style="color:red ;"> {{this.couponCode}} </b>to get discount.</p>
+          
+          {{!-- <p>Use promo code <span class="badge badge-info">50-OFF</span> at checkout.</p> --}}
+        </div>
+        <div class="code"></div>
+      </div>
+      <hr>
+      <div class="modal-footer d-flex justify-content-between">
+        {{!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Nevermind</button> --}}
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <p><small class="text-muted">terms&condition apply</small></p>
+      </div>
+    </div>
+      {{/each}}
+  </div>
+</div>
+  </main>
+
+
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+  const applyCoupon=()=>{
+    let value=document.getElementById('couponCode').value;
+    axios({
+      method:'post',
+      url:'/applycoupon',
+      data:{
+        couponCode:value
+      }
+    }).then((e)=>{
+      console.log(e,'this is e response');
+      if(e.data.response.grandTotal==undefined){
+        swal({
+          text:"Coupon doesn't exist",
+          icon:"warning",
+          button:false,
+          timer:700
+        })
+      }else{
+        console.log('this is working now')
+        let grandTotal=document.getElementById('totalAmount');
+        grandTotal.innerHTML=e.data.response.grandTotal;
+        swal({
+          text:"Coupon Applied",
+          icon:"success",
+          button:false,
+          timer:700
+        })
+      }
+    })
+  }
+
+
+
+
+
+
+  const checkout=async()=>{
+    const paymentMethod=$('input[type="radio"][name="paymentMethod"]:checked').val();
+    const address=$('input[type="radio"][name="deliveryAddress"]:checked').val();
+
+    try{
+      const res=await axios.post('/checkout',{
+        paymentMethod:paymentMethod,
+        address:address
+      }).then((e)=>{
+        if(paymentMethod==='COD'){
+          location.href=`orderConfirm/${e.data.orderDetails._id}`
+        }else{
+          razorpayPayment(e.data.data)
+        }
+      }).catch((err)=>{
+        console.log('error:',err);
+      })
+    }catch(error){
+      console.log(error,'error founded')
+    }
+  }
+
+  function razorpayPayment(order){
+    var options = {
+    "key": "rzp_test_IKCHrLIAqwEx16", // Enter the Key ID generated from the Dashboard
+    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "TrendSetter",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        console.log(response)
+        //alert(response.razorpay_payment_id);
+        //alert(response.razorpay_order_id);
+        //alert(response.razorpay_signature);
+
+        verifyPayment(response,order);
+    },
+      "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9999999999"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+  };
+    var rzp1=new Razorpay(options);
+    rzp1.open();
+  }
+  const verifyPayment=async (payment,order)=>{
+    try{
+      const res=await axios.post('/verifyPayment',{
+        payment,
+        order
+      }).then((e)=>{
+        if(e.data.status){
+          location.href=`/orderConfirm/${order.receipt}`;
+        }else{
+          alert('Payment Failed !!!')
+        }
+      })
+    }catch(error){
+      console.log('error:',error)
+    }
+  }
+</script>
+
+
+  <!--Main layout-->
+  <!--Footer-->
+  {{!-- <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+
+    <!--Call to action-->
+    <div class="pt-4">
+      <a class="btn btn-outline-white" href="https://mdbootstrap.com/docs/jquery/getting-started/download/" target="_blank" role="button">Download MDB
+        <i class="fas fa-download ml-2"></i>
+      </a>
+      <a class="btn btn-outline-white" href="https://mdbootstrap.com/education/bootstrap/" target="_blank" role="button">Start free tutorial
+        <i class="fas fa-graduation-cap ml-2"></i>
+      </a>
+    </div>
+    <!--/.Call to action-->
+
+    <hr class="my-4">
+
+    <!-- Social icons -->
+    <div class="pb-4">
+      <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+        <i class="fab fa-facebook-f mr-3"></i>
+      </a>
+
+      <a href="https://twitter.com/MDBootstrap" target="_blank">
+        <i class="fab fa-twitter mr-3"></i>
+      </a>
+
+      <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
+        <i class="fab fa-youtube mr-3"></i>
+      </a>
+
+      <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
+        <i class="fab fa-google-plus-g mr-3"></i>
+      </a>
+
+      <a href="https://dribbble.com/mdbootstrap" target="_blank">
+        <i class="fab fa-dribbble mr-3"></i>
+      </a>
+
+      <a href="https://pinterest.com/mdbootstrap" target="_blank">
+        <i class="fab fa-pinterest mr-3"></i>
+      </a>
+
+      <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+        <i class="fab fa-github mr-3"></i>
+      </a>
+
+      <a href="http://codepen.io/mdbootstrap/" target="_blank">
+        <i class="fab fa-codepen mr-3"></i>
+      </a>
+    </div>
+    <!-- Social icons -->
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3">
+      © 2018 Copyright:
+      <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
+    </div>
+    <!--/.Copyright-->
+
+  </footer> --}}
+  <!--/.Footer-->

@@ -1,0 +1,268 @@
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-light navbar-light">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa fa-laptop me-2"></i>Admin</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="lib/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Jhon Doe</h6>
+                        <span>Admin</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="/admin" class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Category</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="/admin/category" class="dropdown-item">View Category</a>
+                            <a href="/admin/addcategory" class="dropdown-item">Add Category</a>
+                        </div>
+                    </div>
+                     <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Manage Products</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="/admin/product" class="dropdown-item">View Products</a>
+                            <a href="/admin/addproduct" class="dropdown-item">Add Products</a>
+                        </div>
+                    </div>
+                    <a href="/admin/users" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+<div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Banners</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="/admin/banner" class="dropdown-item">View Banners</a>
+                            <a href="/admin/addbanner" class="dropdown-item">Add Banners</a>
+                        </div>
+                    </div>
+<div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Coupons</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="/admin/coupon" class="dropdown-item">View Coupons</a>
+                            <a href="/admin/addcoupon" class="dropdown-item">Add Coupons</a>
+                        </div>
+                        </div>
+                    <a href="/admin/orders" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Orders</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="signin.html" class="dropdown-item">Sign In</a>
+                            <a href="signup.html" class="dropdown-item">Sign Up</a>
+                            <a href="404.html" class="dropdown-item">404 Error</a>
+                            <a href="blank.html" class="dropdown-item">Blank Page</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+
+        <!-- Content Start -->
+        <div class="content">
+            <h2 style="text-align:center;">Orders</h2>
+            <style>
+    .row {
+        font-size: 12px;
+    }
+
+    td {
+        font-weight: 500;
+        color: rgb(63, 5, 5);
+
+    }
+
+    thead {}
+
+    table {
+        border: 2px solid;
+    }
+</style>
+
+
+
+<div class="row container-fluid">
+    <div class="col-12">
+        <div class="mt-5">
+            <table id="example" class="table table-striped " style="width:100%">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        {{!-- <th>E-mail</th> --}}
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>TotalPrice</th>
+                        <th>Payment Method</th>
+                        <th>Payment Status</th>
+
+                        <th>Delivery Status</th>
+                        <th>Change Status</th>
+                        <th>Cancel Order</th>
+
+                        <th>Date Of Order</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+ 
+                    {{#each orderDetails}}
+
+                    <tr>
+                        <td> {{add @index 1}} </td>
+                        <td> {{this.deliveryAddress.name}}</td>
+                        {{!-- <td> {{this.userId.email}}</td> --}}
+                        <td> {{#each this.products}}{{this.productId.productname}}<br><br> {{/each}}</td>
+                        <td> {{#each this.products}}{{this.quantity}}<br> <br> {{/each}}</td>
+                        <td>{{this.totalAmount}}</td>
+                        <td>{{this.paymentMethod}}</td>
+                        <td>{{this.deliveryStatus}}</td>
+
+                        <td>{{this.productStatus}}</td>
+                        {{#if (eq this.productStatus "Pending")}}
+                        {{!-- <td><a class="btn" href="/admin/shipOrder/{{this._id}}"><i class="fa fa-truck" aria-hidden="true" style="font-size:24px"></i></a></td> --}}
+                        <td><button  onclick="shipOrder('{{this._id}}')" style="border: 0ch;background-color: transparent;"><i class="fa fa-truck" aria-hidden="true" style="font-size:24px"></i></button></td>
+                        {{/if}}
+                        {{#if (eq this.productStatus "shipped")}}
+                        {{!-- <td><a class="btn " href="/admin/deliveryOrder/{{this._id}}"><i class="fa fa-shopping-bag" aria-hidden="true" style="font-size:24px"></i></a></td> --}}
+                       <td><button   onclick="deliveryOrder('{{this._id}}')" style="border: 0ch;background-color: transparent;"><i class="fa fa-shopping-bag" aria-hidden="true" style="font-size:24px"></i></button></td>
+                        {{/if}}
+
+                        {{#if (eq this.productStatus "delivered")}}
+                        <td><i class="fa fa-check" style="font-size:24px;color: green;"></i></td>
+                        {{/if}}
+
+                        {{#if (eq this.productStatus "cancelled")}}
+                        <td><i class="fa fa-ban" aria-hidden="true"  style="font-size:24px"></td>
+                        {{/if}}
+
+                        {{#if (or (eq this.productStatus "Pending")(eq this.productStatus "shipped"))}}
+                        {{!-- <td><a class="btn btn-danger" href="/admin/cancelOrder/{{this._id}}" style="font-size: 10px;">Cancel</a></td> --}}
+                        <td><button class="btn btn-danger" onclick="cancelOrder('{{this._id}}')" style="font-size: 10px;">Cancel</button></td>
+                        
+                        {{/if}}
+
+                        {{#if (eq this.productStatus "delivered")}}
+                        <td style="color: green;">Delivered</td>
+                        {{/if}}
+
+                        {{#if (eq this.productStatus "cancelled")}}
+                        <td><i class="fa fa-ban" aria-hidden="true"  style="font-size:24px"></i></td>
+                        {{/if}}
+
+                        <td>{{format this.createdAt}}</td>
+                    </tr>
+
+                    {{/each}}
+                </tbody>
+            </table>
+
+
+
+
+
+             <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                scrollX: '200px',
+                scrollCollapse: true,
+                paging: true,
+                "ordering": false,
+            });
+        });
+    </script>
+
+</div>
+
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+     async  function shipOrder(id){       
+      axios({
+        method:'post',
+        url:'/admin/shipOrder/'+id
+      }).then((response)=>{
+        location.reload()
+      }).catch((response)=>{
+        console.log(response)
+      })
+    }
+
+    async function deliveryOrder(id){
+       axios({
+        method:'post',
+        url:'/admin/deliveryOrder/'+id
+       }).then((response)=>{
+         location.reload()
+       }).catch((response)=>{
+        console.log(response)
+       })
+    }
+
+ 
+    async function cancel(id) {
+
+        axios({
+            method: 'post',
+            url: '/cancelOrder/' + id
+        }).then((response) => {
+
+
+            location.reload()
+
+        }).catch((response) => {
+            console.log(response)
+        })
+    }
+
+    function cancelOrder(id) {
+        swal({
+            title: "Are you sure?",
+            
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    this.cancel(id)
+                    swal("Poof! Order cancelled successfully!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Order is safe!");
+                }
+            });
+    }
+
+</script>
+
+
+        </div>
+    </div>
+        </div>
+        <!-- Content End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+  

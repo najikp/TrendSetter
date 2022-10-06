@@ -1,0 +1,423 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<style>
+.emp-profile{
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    border-radius: 0.5rem;
+    background: #fff;
+}
+.profile-img{
+    text-align: center;
+}
+.profile-img img{
+    width: 70%;
+    height: 100%;
+}
+.profile-img .file {
+    position: relative;
+    overflow: hidden;
+    margin-top: -20%;
+    width: 70%;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    background: #212529b8;
+}
+.profile-img .file input {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+.profile-head h5{
+    color: #333;
+}
+.profile-head h6{
+    color: #00cc63;
+}
+.profile-edit-btn{
+    border: none;
+    border-radius: 1.5rem;
+    width: 70%;
+    padding: 2%;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+}
+.proile-rating{
+    font-size: 12px;
+    color: #818182;
+    margin-top: 5%;
+}
+.proile-rating span{
+    color: #495057;
+    font-size: 15px;
+    font-weight: 600;
+}
+.profile-head .nav-tabs{
+    margin-bottom:5%;
+}
+.profile-head .nav-tabs .nav-link{
+    font-weight:600;
+    border: none;
+}
+.profile-head .nav-tabs .nav-link.active{
+    border: none;
+    border-bottom:2px solid #00cc77;
+}
+.profile-work{
+    padding: 14%;
+    margin-top: -15%;
+}
+.profile-work p{
+    font-size: 12px;
+    color: #818182;
+    font-weight: 600;
+    margin-top: 10%;
+}
+.profile-work a{
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+.profile-work ul{
+    list-style: none;
+}
+.profile-tab label{
+    font-weight: 600;
+}
+.profile-tab p{
+    font-weight: 600;
+    color: #00cc8b;
+}
+</style>
+<div class="container emp-profile">
+            {{!-- <form method="post"> --}}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                            {{#if response.image.[0]}}
+                            <img src="/images/{{response.image.[0]}}" width="70" height="50" alt="user-profile"/>
+                            {{else}}
+                            <img src="https://static.thenounproject.com/png/187803-200.png" alt="user-profile"/>
+                            {{/if}}
+                            <div class="file btn btn-lg btn-primary">
+                                {{response.name}}
+                                <a href="" class="fa  fa-edit" data-bs-toggle="modal" data-bs-target="#modalLoginForm"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                        {{response.name}}
+                                    </h5>
+                                    <h6>
+                                        {{response.email}}
+                                    </h6>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-work">
+                            <a href="/orders">My Order</a><br/>
+                            <a href="/wishlist">Wishlist</a><br/>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#modalSubscriptionForm">Change Password</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Name</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{response.name}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{response.email}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Phone</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{response.phonenumber}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="hr-5">
+                                            <a href="" data-bs-toggle="modal" data-bs-target="#addAddress" class="btn btn-dark btn-rounded mb-4" >Add New Address +</a>
+                                        </div>
+                                        <div class="row">
+                                            {{#each addresses}}
+                                        <div class="col-lg-6 mt-5">
+                                            <div class="card" style="width: 18rem;">
+                                                <div class="card-body">
+                                                <h5 class="card-title">{{this.address.name}}</h5><br>
+                                                <small>{{this.address.house}},{{this.address.apartment}}</small><br>
+                                                <small>{{this.address.landmark}}</small><br>
+                                                <small>{{this.address.district}}-{{this.address.pin}}</small>
+                                                <div class="row mt-5">
+                                                    <div class="col-md-6">
+                                                        <a href="/deleteAddress/{{this._id}}" class="btn btn-danger">Remove</a>
+
+                                                    </div>
+                                                    <div class="col-md-6">
+<a href="/editaddress/{{this._id}}" class="btn  btn-primary mx-5 ">Edit</a>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                                </div>
+                                        </div>
+                                                {{/each}}
+                                        </div>
+                            </div>
+
+
+
+
+
+
+
+{{!-- //////////////////////////Modal for profile pic///////////////////// --}}
+<form action="/update-profile" method="post" enctype="multipart/form-data">
+<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Edit Profile</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <i class="fas fa-user prefix grey-text"></i>
+          <input type="text" id="defaultForm-email" name="name" value="{{response.name}}" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Your Name</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <i class="fas fa-phone prefix grey-text"></i>
+          <input type="number" id="defaultForm-pass" disabled name="phonenumber" value="{{response.phonenumber}}" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your Number</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <i class="fas fa-envelope prefix grey-text"></i>
+          <input type="email" id="defaultForm-pass" name="email" value="{{response.email}}" class="form-control validate">
+          <label data-bs-error="wrong" data-bs-success="right" for="defaultForm-pass">Your Email</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <i class="fas fa-image prefix grey-text"></i>
+          <input type="file" id="defaultForm-pass" name="image" class="form-control validate"/>
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">Profile Picture</label>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-dartk" type="submit">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+
+
+
+
+{{!-- //////////////////////Reset Password////////////////// --}}
+<form action="/change-password" method="post">
+<div class="modal fade" id="modalSubscriptionForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Change Password</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" id="form3" name="oldPassword" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="form3">Enter Existing Password</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" id="form2" name="newPassword" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="form2">Enter New Password</label>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-indigo" type="submit">Submit <i class="fas fa-paper-plane-o ml-1"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+
+{{!-- /////////////////ADD ADDRESS MODAL//////////////// --}}
+<form action="/address-profile/{{userid}}" method="post">
+<div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">New Address</h4>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="row">
+
+          <div class="mb-3">
+            <label for="lastName">Name</label>
+            <input type="text" name="name" class="form-control" id="lastName" placeholder="" value="" required>
+            <div class="invalid-feedback">
+              Valid name is required.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="address2">Mobile</label>
+          <input type="number" name="mobile" class="form-control" id="mobile">
+        </div>
+
+      
+
+        <div class="mb-3">
+          <label for="address">Address</label>
+          <input type="text" name="house" class="form-control" id="address" placeholder="1234 Main St" required>
+          <div class="invalid-feedback">
+            Please enter your shipping address.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address2">Appartment,suit,etc.</label>
+          <input type="text" name="apartment" class="form-control" id="address2" placeholder="Apartment or suite">
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="country">Landmark</label>
+            <input type="text" name="landmark" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="country">District</label>
+            <input type="text" name="district" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="state">PIN</label>
+            <input type="number" name="pin" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="zip">State</label>
+            <input type="text" name="state" class="form-control">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+                            {{!-- <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Experience</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Hourly Rate</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>10$/hr</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Total Projects</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>230</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>English Level</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Availability</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>6 months</p>
+                                            </div>
+                                        </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Your Bio</label><br/>
+                                        <p>Your detail description</p>
+                                    </div>
+                                </div>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+            {{!-- </form>            --}}
+        </div>
