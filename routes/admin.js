@@ -24,7 +24,7 @@ const bannerController = require('../controllers/bannerController');
 const coupenController = require('../controllers/couponController');
 const couponController = require('../controllers/couponController');
 const orderController = require('../controllers/orderController');
-const usercontroller = require('../controllers/usercontroller');
+const usercontroller = require('../controllers/userController');
 const  fileStorageEngine = multer.diskStorage({
   destination:(req,file,cb)=>{
     cb(null,'./public/images');
