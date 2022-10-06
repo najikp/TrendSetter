@@ -1,6 +1,5 @@
 const promise=require('bcrypt/promises');
 const objectID=require('bson');
-const response=require('expres');
 const async=require('hbs/lib/async');
 const categoryModel=require('../model/category-model');
 const productModel = require('../model/product-model');
