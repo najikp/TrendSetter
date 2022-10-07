@@ -245,6 +245,13 @@ router.get('/logout',(req,res)=>{
 //   }
 // })
 
+/////////////login//////
+
+router.get('/lookup',(req,res)=>{
+  req.session.destroy();
+  res.redirect('/login');
+})
+
 
 
 
@@ -265,7 +272,7 @@ router.post('/otpverify',(req,res)=>{
 
       req.session.loggedIn=true;
       userModel.findOneAndUpdate({phonenumber:req.session.phonenumber},{verified:true},()=>{
-        res.redirect('/logout');
+        res.redirect('/lookup');
       })
     }else{
       res.render('user/verifyotp')
