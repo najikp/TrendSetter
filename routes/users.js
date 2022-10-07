@@ -245,7 +245,7 @@ router.get('/logout',(req,res)=>{
 //   }
 // })
 
-/////////////login//////
+/////////////login//////after signup////
 
 router.get('/lookup',(req,res)=>{
   req.session.destroy();

@@ -591,8 +591,8 @@
 
 <div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog " role="document">
-      {{#each coupons}}
     <div class="modal-content">
+      {{#each coupons}}
       <div class="modal-body text-center">
         <div class="icon text-danger">
           <i class="fas fa-gift"></i>
@@ -606,13 +606,13 @@
         <div class="code"></div>
       </div>
       <hr>
+      {{/each}}
       <div class="modal-footer d-flex justify-content-between">
         {{!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Nevermind</button> --}}
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         <p><small class="text-muted">terms&condition apply</small></p>
       </div>
     </div>
-      {{/each}}
   </div>
 </div>
   </main>

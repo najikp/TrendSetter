@@ -124,22 +124,26 @@ router.get('/users',(req,res)=>{
 
 
 ///////////////Block Users////////////
-router.get('/blockuser/:_id',(req,res)=>{
+router.get('/blockuser/:_id',(req,res,next)=>{
   const id=req.params._id;
   console.log('working');
   adminController.blockuser(id).then((response)=>{
     // req.session.user.status=true;
     console.log(response);
     res.redirect('/admin/users')
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
 //////////Active Users/////////////
-router.get('/activeuser/:_id',(req,res)=>{
+router.get('/activeuser/:_id',(req,res,next)=>{
   const id=req.params._id;
   adminController.activeuser(id).then((response)=>{
     res.redirect('/admin/users')
+   }).catch((err)=>{
+    next(err)
    })
 })
 
@@ -206,7 +210,7 @@ router.post('/addcategory',upload.array('image',1),(req,res)=>{
 
 /////////////////////delete category//////////////////
 
-router.get('/delete-category/:_id',async(req,res)=>{
+router.get('/delete-category/:_id',async(req,res,next)=>{
   const categoryid=req.params._id;
   const category=await categoryController.categoryCheck(categoryid);
   console.log(category[0],'this is what it is.....');
@@ -216,6 +220,8 @@ router.get('/delete-category/:_id',async(req,res)=>{
     console.log(category,'is the category inside the product')
     categoryController.deletecategory(categoryid).then((data)=>{
     res.redirect('/admin/category')
+    }).catch((err)=>{
+      next(err)
     })
   }
 
@@ -224,14 +230,16 @@ router.get('/delete-category/:_id',async(req,res)=>{
 
 /////////////////////update category//////////////////////
 
-router.get('/editcategory/:_id',(req,res)=>{
+router.get('/editcategory/:_id',(req,res,next)=>{
   const categoryid=req.params._id;
   categoryController.getcategorydata(categoryid,req.body).then((categorydata)=>{
     res.render('admin/update-category',{categorydata,layout:'admin-layout'})
+  }).catch((err)=>{
+    next(err)
   })
 })
 
-router.post('/updatecategory/:_id',upload.array('image',1),(req,res)=>{
+router.post('/updatecategory/:_id',upload.array('image',1),(req,res,next)=>{
   const images=req.files;
   let array=[];
   array=images.map((value)=>value.filename);
@@ -239,6 +247,8 @@ router.post('/updatecategory/:_id',upload.array('image',1),(req,res)=>{
   const categoryid=req.params._id;
   categoryController.updatecategory(categoryid,req.body).then((response)=>{
     res.redirect('/admin/category')
+  }).catch((err)=>{
+    next(err)
   })
 })
 
@@ -290,17 +300,19 @@ router.post('/addproduct',upload.array('image',3),(req,res)=>{
 
 ////////////Delete Product////////////
 
-router.get('/deleteproduct/:_id',(req,res)=>{
+router.get('/deleteproduct/:_id',(req,res,next)=>{
   const productid=req.params._id;
   productController.deleteProduct(productid).then((data)=>{
     res.redirect('/admin/product');
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
 /////////////Update Product/////////////////
 
-router.get('/updateproduct/:_id',(req,res)=>{
+router.get('/updateproduct/:_id',(req,res,next)=>{
   const productid=req.params._id;
   productController.updateProduct(productid,req.body).then((productdata)=>{
     categoryController.getcategory(productid).then((categorydata)=>{
@@ -316,12 +328,14 @@ router.get('/updateproduct/:_id',(req,res)=>{
       res.render('admin/update-product',{products,categorydata,layout:'admin-layout'});
 
     })
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
 
-router.post('/updateproduct/:_id',upload.array('image',3),(req,res)=>{
+router.post('/updateproduct/:_id',upload.array('image',3),(req,res,next)=>{
   const productid=req.params._id;
   const image=req.files;
   let array=[];
@@ -329,6 +343,8 @@ router.post('/updateproduct/:_id',upload.array('image',3),(req,res)=>{
   req.body.image=array;
   productController.updateProduct(productid,req.body).then((response)=>{
     res.redirect('/admin/product')
+  }).catch((err)=>{
+    next(err)
   })
 })
 
@@ -371,14 +387,14 @@ router.post('/addbanner',upload.array('image',1),(req,res)=>{
 
 /////////delete banner data///////
 
-router.get('/deletebanner/:_id',(req,res)=>{
+router.get('/deletebanner/:_id',(req,res,next)=>{
 
   const bannerid=req.params._id;
   bannerController.deleteBanner(bannerid).then((response)=>{
 
     res.redirect('/admin/banner');
   }).catch((err)=>{
-    console.log(err);
+    next(err)
   })
 
 })
@@ -387,18 +403,20 @@ router.get('/deletebanner/:_id',(req,res)=>{
 
 ///////////edit banner data/////////
 
-router.get('/updatebanner/:_id',(req,res)=>{
+router.get('/updatebanner/:_id',(req,res,next)=>{
   let bannerid=req.params._id;
     bannerController.getBannerValue(bannerid).then((response)=>{ 
       console.log(response);
       res.render('admin/update-banner',{response,layout:'admin-layout'});
+    }).catch((err)=>{
+      next(err)
     })               
 
 })
 
 
 
-router.post('/updatebanner/:_id',upload.array('image',3),(req,res)=>{
+router.post('/updatebanner/:_id',upload.array('image',3),(req,res,next)=>{
   const image=req.files;
   let array=[];
   array=image.map((value)=>value.filename)
@@ -406,6 +424,8 @@ router.post('/updatebanner/:_id',upload.array('image',3),(req,res)=>{
   let bannerid=req.params._id;
   bannerController.editBanner(bannerid,req.body).then((response)=>{
     res.redirect('/admin/banner');
+  }).catch((err)=>{
+    next(err)
   })
 })
 
@@ -446,27 +466,32 @@ router.post('/addcoupon',(req,res)=>{
 
 //////////delete coupons///////////
 
-router.get('/deletecoupon/:_id',(req,res)=>{
+router.get('/deletecoupon/:_id',(req,res,next)=>{
   couponController.deleteCoupon(req.params._id).then((response)=>{
     res.redirect('/admin/coupon'); 
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
 //////////edit coupons//////////
 
-router.get('/editcoupon/:_id',(req,res)=>{
+router.get('/editcoupon/:_id',(req,res,next)=>{
   couponController.getcoupon(req.params._id).then((response)=>{
     res.render('admin/update-coupon',{response,layout:'admin-layout'});
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
-router.post('/editcoupon/:_id',(req,res)=>{
+router.post('/editcoupon/:_id',(req,res,next)=>{
   couponController.editCoupons(req.params._id,req.body).then((response)=>{
     res.redirect('/admin/coupon')
   }).catch((error)=>{
     console.log(error);
+    next(err)
   }) 
 })
 
@@ -484,27 +509,33 @@ router.get('/orders',verifyLogin,(req,res)=>{
 
 
 /////shipping////
-router.post('/shipOrder/:_id',(req,res)=>{
+router.post('/shipOrder/:_id',(req,res,next)=>{
   orderController.shipOrder(req.params._id).then((response)=>{
     // res.redirect('/admin/orders')
     res.json({response})
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 ////deliverying////
-router.post('/deliveryOrder/:_id',(req,res)=>{
+router.post('/deliveryOrder/:_id',(req,res,next)=>{
   orderController.deliveryOrder(req.params._id).then((response)=>{
     // res.redirect('/admin/orders');
     res.json({response});
+  }).catch((err)=>{
+    next(err)
   })
 
 })
 
 /////cancelling///
-router.post('/cancelOrder/:_id',(req,res)=>{
+router.post('/cancelOrder/:_id',(req,res,next)=>{
   orderController.cancelOrder(req.params._id).then((response)=>{
     // res.redirect('/admin/orders');
     res.json({response});
+  }).catch((err)=>{
+    next(err)
   })
 })
 
