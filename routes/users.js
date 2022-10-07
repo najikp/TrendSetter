@@ -28,67 +28,6 @@ const fs = require('fs');
 var easyinvoice = require('easyinvoice');
 
 
-////////////////////InVoice NPM/////////////////
-
-//Import the library into your project
- 
-// var data = {
-//     //"documentTitle": "RECEIPT", //Defaults to INVOICE
-//     "currency": "INR",
-//     "taxNotation": "gst", //or gst
-//     "marginTop": 25,
-//     "marginRight": 25,
-//     "marginLeft": 25,
-//     "marginBottom": 25,
-//     "logo": "https://www.easyinvoice.cloud/img/logo.png", //or base64
-//     //"logoExtension": "png", //only when logo is base64
-//     "sender": {
-//         "company": "TrendSetter",
-//         "address": "Calicut",
-//         "zip": "673003",
-//         "city": "Kozhikode",
-//         "country": "India"
-//         //"custom1": "custom value 1",
-//         //"custom2": "custom value 2",
-//         //"custom3": "custom value 3"
-//     },
-//     "client": {
-//         "company": "Client Corp",
-//         "address": "Clientstreet 456",
-//         "zip": "4567 CD",
-//         "city": "Clientcity",
-//         "country": "Clientcountry"
-//         //"custom1": "custom value 1",
-//         //"custom2": "custom value 2",
-//         //"custom3": "custom value 3"
-//     },
-//     "invoiceNumber": "2020.0001",
-//     "invoiceDate": "05-01-2020",
-//     "products": [
-//         {
-//             "quantity": "2",
-//             "description": "Test1",
-//             "tax": 6,
-//             "price": 33.87
-//         },
-//         {
-//             "quantity": "4",
-//             "description": "Test2",
-//             "tax": 21,
-//             "price": 10.45
-//         }
-//     ],
-//     "bottomNotice": "Kindly pay your invoice within 15 days."
-// };
- 
-// //Create your invoice! Easy!
-// easyinvoice.createInvoice(data, async function (result) {
-//     //The response will contain a base64 encoded PDF file
-//     console.log(result.pdf);
-//     await fs.writeFileSync("invoice.pdf", result.pdf, 'base64');
-// });
-
-
 
 
 
@@ -326,7 +265,7 @@ router.post('/otpverify',(req,res)=>{
 
       req.session.loggedIn=true;
       userModel.findOneAndUpdate({phonenumber:req.session.phonenumber},{verified:true},()=>{
-        res.redirect('/');
+        res.redirect('/logout');
       })
     }else{
       res.render('user/verifyotp')
@@ -362,7 +301,7 @@ router.get('/shop',userMiddleware.isblocked,(req,res)=>{
 
 ////////////////get items by category//////////////
 
-router.get('/shop/:_id',userMiddleware.isblocked,(req,res)=>{
+router.get('/shop/:_id',userMiddleware.isblocked,(req,res,next)=>{
   categoryController.getcategory().then((category)=>{
     productController.getByCategory(req.params._id).then((getByCategory)=>{
       if(req.session.user){
@@ -375,6 +314,8 @@ router.get('/shop/:_id',userMiddleware.isblocked,(req,res)=>{
       }else{
         res.render('user/shopbycategory',{user:false,category,getByCategory});
       }
+    }).catch((error)=>{
+      next(error);
     })
     })
   })
@@ -392,7 +333,7 @@ router.get('/shop/:_id',userMiddleware.isblocked,(req,res)=>{
 
 //////////single product viewing/////////////
 
-router.get('/singleshop/:_id',userMiddleware.isblocked,(req,res)=>{
+router.get('/singleshop/:_id',userMiddleware.isblocked,(req,res,next)=>{
   let productid=req.params._id;
   productController.getProductData(productid).then(async(response)=>{
     console.log(response);
@@ -406,6 +347,8 @@ router.get('/singleshop/:_id',userMiddleware.isblocked,(req,res)=>{
     res.render('user/single-shop',{user:false,response,products})
     }
     
+  }).catch((error)=>{
+    next(error)
   })
   
 })
@@ -446,13 +389,15 @@ router.get('/cart',userMiddleware.isblocked,verifyLogin,(req,res)=>{
 // })
 
 //////////////////add to cart get method//////////////// 
-router.get('/addtocart/:_id',verifyLogin,(req,res)=>{
+router.get('/addtocart/:_id',verifyLogin,(req,res,next)=>{
   cartController.addProductDetails(req.session.user._id).then((ProductDetails)=>{
     cartController.addToCart(req.params._id,req.session.user._id).then((response)=>{
     cart = response.cart
     cartempty = response.cartempty
       res.redirect('/cart');
   })
+}).catch((err)=>{
+  next(err);
 })
 })
 
@@ -468,18 +413,22 @@ router.post('/addtocart-wishlist/:_id',verifyLogin,(req,res)=>{
           res.json({response});
       })
   })
+}).catch((err)=>{
+  next(err);
 })
 })
 
 
 ////////////add to cart post method////////////////
 
-router.post('/addtocart/:_id',verifyLogin,(req,res)=>{
+router.post('/addtocart/:_id',verifyLogin,(req,res,next)=>{
   // cartController.addProductDetails(req.session.user._id).then((ProductDetails)=>{
     cartController.addToCart(req.params._id,req.session.user._id).then((response)=>{
     cart = response.cart
     cartempty = response.cartempty
       res.json(response)
+  }).catch((err)=>{
+    next(err)
   })
 // })
 })
@@ -488,32 +437,38 @@ router.post('/addtocart/:_id',verifyLogin,(req,res)=>{
 
 ////////////////delete cart items////////////
 
-router.post('/deletecart/:_id',verifyLogin,(req,res)=>{
+router.post('/deletecart/:_id',verifyLogin,(req,res,next)=>{
   cartController.deleteCart(req.session.user._id,req.params._id).then((response)=>{
     res.json(response)
     // res.json(response);
+  }).catch((err)=>{
+    next(err);
   })
 })
 
 
 //////////////////////increment cart items////////////////////
 
-router.post('/incQty/:_id',verifyLogin,(req,res)=>{
+router.post('/incQty/:_id',verifyLogin,(req,res,next)=>{
   productid=req.params._id;
   userid=req.session.user._id;
   cartController.incQty(productid,userid).then((response)=>{
     res.json(response);
+  }).catch((err)=>{
+    next(err);
   })
 })
 
 
 //////////////////decrement cart items//////////
 
-router.post('/decQty/:_id',verifyLogin,(req,res)=>{
+router.post('/decQty/:_id',verifyLogin,(req,res,next)=>{
   productid=req.params._id;
   userid=req.session.user._id;
   cartController.decQty(productid,userid).then((response)=>{
     res.json(response)
+  }).catch((err)=>{
+    next(err);
   })
 })
 
@@ -536,19 +491,23 @@ router.get('/wishlist',userMiddleware.isblocked,verifyLogin,(req,res)=>{
   })
 })
 
-router.post('/toWishlist/:_id',verifyLogin,(req,res)=>{
+router.post('/toWishlist/:_id',verifyLogin,(req,res,next)=>{
     wishlistController.addToWishlist(req.params._id,req.session.user._id).then((response)=>{
       wishlist=response.wishlist;
       wishlistempty=response.wishlistempty;
       res.json(response);
+    }).catch((err)=>{
+      next(err);
     })
   })
 
 
 
-router.post('/deletewishlist/:_id',verifyLogin,(req,res)=>{
+router.post('/deletewishlist/:_id',verifyLogin,(req,res,next)=>{
   wishlistController.deleteWishlist(req.session.user._id,req.params._id).then((response)=>{
     res.json({response})
+  }).catch((err)=>{
+    next(err);
   })
 })
 
@@ -614,16 +573,20 @@ router.get('/checkout',userMiddleware.isblocked,verifyLogin,(req,res)=>{
 
 
 
-router.post('/address/:id',(req,res)=>{
+router.post('/address/:id',(req,res,next)=>{
   addressController.addAddress(req.body,req.session.user._id).then((response)=>{
     res.redirect('/checkout');
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
-router.post('/address-profile/:_id',(req,res)=>{
+router.post('/address-profile/:_id',(req,res,next)=>{
   addressController.addAddress(req.body,req.session.user._id).then((response)=>{
     res.redirect('/profile')
+  }).catch((err)=>{
+    next(err)
   })
 })
 
@@ -689,9 +652,11 @@ router.post('/checkout',verifyLogin,async(req,res,next)=>{
 
 ////////////adding new address/////////////
 
-router.get('/addAddress/:_id',verifyLogin,userMiddleware.isblocked,(req,res)=>{
+router.get('/addAddress/:_id',verifyLogin,userMiddleware.isblocked,(req,res,next)=>{
   addressController.addAddress(req.session.user._id,req.body).then((response)=>{
     res.render('user/add-address',{user:true});
+  }).catch((err)=>{
+    next(err)
   })
 })
 
@@ -714,17 +679,19 @@ router.get('/addAddress-profile',verifyLogin,userMiddleware.isblocked,async(req,
 
 ///////////delete addresss////////////
 
-router.get('/deleteAddress/:_id',userMiddleware.isblocked,verifyLogin,(req,res)=>{
+router.get('/deleteAddress/:_id',userMiddleware.isblocked,verifyLogin,(req,res,next)=>{
   addressController.deleteAddress(req.params._id).then((response)=>{
     console.log(req.params._id,'this is req.params._id');
     res.redirect('/profile');
+  }).catch((err)=>{
+    next(err)
   })
 })
 
 
 ///////////edit address////////////
 
-router.get('/editAddress/:_id',verifyLogin,userMiddleware.isblocked,async(req,res)=>{
+router.get('/editAddress/:_id',verifyLogin,userMiddleware.isblocked,async(req,res,next)=>{
   const userid=req.session.user._id;
   const addressid=req.params._id;
   const item=await wishlistController.totalItem(userid);
@@ -732,16 +699,20 @@ router.get('/editAddress/:_id',verifyLogin,userMiddleware.isblocked,async(req,re
   addressController.getAddressData(req.params._id).then((addresses)=>{
     console.log(addresses,'this is the address of the single person');
     res.render('user/edit-address',{user:true,userid,addressid,items,item,addresses})
+  }).catch((err)=>{
+    next(err);
   })
 })
 
 
-router.post('/editAddress/:_id',(req,res)=>{
+router.post('/editAddress/:_id',(req,res,next)=>{
   const addressid=req.params._id
   console.log(req.body,'thsi is addressid');
   console.log(addressid,'is the addressid');  
   addressController.updateAddress(addressid,req.body).then((response)=>{
     res.redirect('/profile')
+  }).catch((err)=>{
+    next(err);
   })
 })
 
@@ -794,7 +765,7 @@ router.post('/change-password',(req,res)=>{
 
 /////////////Order Confirmation/////////
 
-router.get('/orderConfirm/:_id',userMiddleware.isblocked,verifyLogin,async(req,res)=>{
+router.get('/orderConfirm/:_id',userMiddleware.isblocked,verifyLogin,async(req,res,next)=>{
   const id=req.params._id;
   const User=req.session.user;
   const session=req.session;
@@ -807,18 +778,22 @@ router.get('/orderConfirm/:_id',userMiddleware.isblocked,verifyLogin,async(req,r
     // const everything=trackDetails.cart.products;
     // console.log('thsi is to toto ',everything,'is the details');
     res.render('user/order-confirmation',{user:true,User,trackDetails,session,item,items,trackDetails,everything,coupons})
+  }).catch((err)=>{
+    next(err);
   })
 })
 
 
 ///////Track Order////////
 
-router.get('/trackOrder/:_id',verifyLogin,userMiddleware.isblocked,(req,res)=>{
+router.get('/trackOrder/:_id',verifyLogin,userMiddleware.isblocked,(req,res,next)=>{
   orderController.getTrack(req.params._id).then(async(trackDetails)=>{
     console.log(trackDetails,'this is details');
     const item=await wishlistController.totalItem(req.session.user._id);
     const items=await cartController.totalItem(req.session.user._id);
     res.render('user/track-order',{user:true,trackDetails,item,items});
+  }).catch((err)=>{
+    next(err);
   })
 })
 
@@ -858,9 +833,11 @@ router.get('/orders',userMiddleware.isblocked,verifyLogin,(req,res)=>{
 
 ///////cancel orders/////
 
-router.post('/cancelOrder/:_id',(req,res)=>{
+router.post('/cancelOrder/:_id',(req,res,next)=>{
   orderController.cancelOrder(req.params._id).then((response)=>{
     res.json({response});
+  }).catch((err)=>{
+    next(err);
   })
 })
 

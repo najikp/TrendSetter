@@ -67,8 +67,12 @@ module.exports={
 
     getProductData:(productid)=>{
         return new Promise(async(resolve,reject)=>{
-            let productdata= await productModel.findOne({_id:(productid)}).lean();
-                resolve(productdata);
+            try{
+                let productdata= await productModel.findOne({_id:(productid)}).lean();
+                    resolve(productdata);
+            }catch(error){
+                reject(error)
+            }
         })
     },
 
