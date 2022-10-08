@@ -122,7 +122,7 @@ module.exports={
     allOrders:()=>{
         return new Promise(async(resolve,reject)=>{
             try{
-                await orderModel.find().lean().populate('products.productId').then((response)=>{
+                await orderModel.find().sort({createdAt:-1}).lean().populate('products.productId').then((response)=>{
                     resolve(response);
                 })
             }catch(error){
