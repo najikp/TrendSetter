@@ -198,6 +198,8 @@ getTotalAmount:(userid)=>{
               response.cartempty=true;
               resolve(response)
             }
+          }else{
+            resolve(response);
           }
       })
     })
